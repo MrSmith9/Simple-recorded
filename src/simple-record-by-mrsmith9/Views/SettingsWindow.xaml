@@ -1,0 +1,154 @@
+<Window x:Class="SimpleRecord.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings - Simple Record"
+        Icon="/Assets/AppIcon.ico"
+        Width="580" Height="640"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource BackgroundBrush}"
+        FontFamily="Segoe UI">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Everything above the Save/Cancel buttons scrolls, so the window
+             can stay a fixed, reasonable size no matter how many settings
+             get added later - the mouse wheel, the scrollbar, and the Up/
+             Down/Page Up/Page Down keys (once this area has focus) all
+             work here, since this is WPF's normal built-in ScrollViewer
+             behavior, not anything custom. -->
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Padding="28,28,20,0">
+            <StackPanel>
+                <TextBlock Text="Settings" Style="{StaticResource HeadingText}" Margin="0,0,0,20"/>
+
+                <!-- Save location -->
+                <TextBlock Text="Save recordings to:" Style="{StaticResource FieldLabel}"/>
+
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource FieldBox}"
+                            Padding="10,8" Margin="0,0,10,0">
+                        <TextBlock x:Name="OutputFolderText" Style="{StaticResource BodyText}"
+                                   TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                    </Border>
+                    <Button Grid.Column="1" x:Name="BrowseButton" Content="_Browse..." Style="{StaticResource SecondaryButton}"
+                            Click="BrowseButton_Click"
+                            AutomationProperties.HelpText="Opens a folder picker to choose where recordings are saved."/>
+                </Grid>
+
+                <Border Style="{StaticResource Divider}" Margin="0,0,0,20"/>
+
+                <!-- Recording quality -->
+                <TextBlock Text="Recording quality (output size):" Style="{StaticResource FieldLabel}"/>
+
+                <StackPanel Margin="0,0,0,20">
+                    <RadioButton x:Name="AutomaticRadio" GroupName="Resolution" Style="{StaticResource ThemedRadioButton}"
+                                 Content="_Automatic (matches what you're recording) - Recommended" Margin="0,0,0,10"/>
+                    <RadioButton x:Name="R720Radio" GroupName="Resolution" Style="{StaticResource ThemedRadioButton}"
+                                 Content="_720p HD (1280 x 720)" Margin="0,0,0,10"/>
+                    <RadioButton x:Name="R1080Radio" GroupName="Resolution" Style="{StaticResource ThemedRadioButton}"
+                                 Content="1_080p Full HD (1920 x 1080)" Margin="0,0,0,10"/>
+                    <RadioButton x:Name="R1440Radio" GroupName="Resolution" Style="{StaticResource ThemedRadioButton}"
+                                 Content="_2K / 1440p (2560 x 1440)" Margin="0,0,0,10"/>
+                    <RadioButton x:Name="R2160Radio" GroupName="Resolution" Style="{StaticResource ThemedRadioButton}"
+                                 Content="_4K UHD (3840 x 2160)" Margin="0,0,0,10"/>
+                    <RadioButton x:Name="R4320Radio" GroupName="Resolution" Style="{StaticResource ThemedRadioButton}"
+                                 Content="_8K UHD (7680 x 4320)" Margin="0,0,0,14"/>
+
+                    <TextBlock Style="{StaticResource BodyText}" FontSize="13" TextWrapping="Wrap" Opacity="0.85">
+                        Choosing a size bigger than what you're actually recording does not add
+                        real detail - it just stretches the picture to fill that size. If the
+                        shape doesn't match (for example recording a narrow window at a wide
+                        resolution), black bars are added rather than the image looking stretched
+                        or squashed. "Automatic" is recommended for most people.
+                    </TextBlock>
+                </StackPanel>
+
+                <Border Style="{StaticResource Divider}" Margin="0,0,0,20"/>
+
+                <!-- Appearance (theme) -->
+                <TextBlock Text="Appearance:" Style="{StaticResource FieldLabel}"/>
+
+                <StackPanel Margin="0,0,0,8">
+                    <RadioButton x:Name="DarkThemeRadio" GroupName="Theme" Style="{StaticResource ThemedRadioButton}"
+                                 Content="_Dark (Recommended)" Margin="0,0,0,10"/>
+                    <RadioButton x:Name="LightThemeRadio" GroupName="Theme" Style="{StaticResource ThemedRadioButton}"
+                                 Content="_Light" Margin="0,0,0,10"/>
+                </StackPanel>
+
+                <TextBlock Style="{StaticResource BodyText}" FontSize="13" TextWrapping="Wrap" Opacity="0.85">
+                    Changes the colors used by every window in the app. Click Save and
+                    the main window will reopen right away with the new colors (unless
+                    a recording is in progress, in which case it shows next time you
+                    open Simple Record instead).
+                </TextBlock>
+
+                <Border Style="{StaticResource Divider}" Margin="0,20,0,20"/>
+
+                <!-- Microphone -->
+                <StackPanel Margin="0,0,0,20">
+                    <CheckBox x:Name="MicrophoneCheckBox" Content="_Microphone audio" Style="{StaticResource ThemedCheckBox}"
+                              FontWeight="SemiBold"
+                              AutomationProperties.HelpText="When checked, your microphone is recorded into the video's sound track."/>
+                    <TextBlock Style="{StaticResource BodyText}" FontSize="13" TextWrapping="Wrap" Opacity="0.85" Margin="0,6,0,0">
+                        When checked, your default microphone is recorded into the video's
+                        sound track. Unchecked (the default), the recording has no sound
+                        at all. There's no separate microphone picker yet - it always uses
+                        whichever microphone is set as your default in Windows.
+                    </TextBlock>
+                </StackPanel>
+
+                <Border Style="{StaticResource Divider}" Margin="0,0,0,20"/>
+
+                <!-- Animated GIF export -->
+                <StackPanel Margin="0,0,0,20">
+                    <CheckBox x:Name="ExportGifCheckBox" Content="Also save an animated _GIF" Style="{StaticResource ThemedCheckBox}"
+                              FontWeight="SemiBold"
+                              AutomationProperties.HelpText="When checked, an animated .gif of the recording is saved alongside the .mp4 video."/>
+                    <TextBlock Style="{StaticResource BodyText}" FontSize="13" TextWrapping="Wrap" Opacity="0.85" Margin="0,6,0,0">
+                        When checked, a second file - an animated .gif, with the same name
+                        as the video - is saved next to every recording. GIFs have no sound
+                        and far fewer colors than video, and get large fast for anything more
+                        than a short clip, so this is an extra file, not a replacement for
+                        the .mp4. Unchecked (the default), only the video is saved.
+                    </TextBlock>
+                </StackPanel>
+
+                <Border Style="{StaticResource Divider}" Margin="0,0,0,20"/>
+
+                <!-- Updates -->
+                <TextBlock Text="Updates:" Style="{StaticResource FieldLabel}"/>
+
+                <TextBlock x:Name="CurrentVersionText" Style="{StaticResource BodyText}" FontSize="13" Margin="0,0,0,12"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <Button x:Name="CheckUpdatesButton" Content="_Check for Updates" Style="{StaticResource SecondaryButton}"
+                            Click="CheckUpdatesButton_Click" Margin="0,0,10,0"
+                            AutomationProperties.HelpText="Checks GitHub for a newer version of Simple Record than the one you're running."/>
+                    <Button x:Name="GetUpdateButton" Content="_Get It" Style="{StaticResource SecondaryButton}"
+                            Click="GetUpdateButton_Click" Visibility="Collapsed"
+                            AutomationProperties.HelpText="Opens the download page for the new version in your browser."/>
+                </StackPanel>
+
+                <TextBlock x:Name="UpdateStatusText" Style="{StaticResource BodyText}" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,28"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons stay fixed at the bottom, outside the scrollable area,
+             so Save and Cancel are always visible without needing to
+             scroll down to reach them. -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="28,12,28,20">
+            <Button x:Name="SaveButton" Content="_Save" Style="{StaticResource PrimaryButton}"
+                    Margin="0,0,10,0" Click="SaveButton_Click" IsDefault="True"/>
+            <Button x:Name="CancelButton" Content="_Cancel" Style="{StaticResource SecondaryButton}"
+                    Click="CancelButton_Click" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>
