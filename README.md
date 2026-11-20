@@ -1,3 +1,5 @@
+# No longer update. 
+
 # Simple Record
 
 A Windows desktop screen recorder, built step by step in Visual Studio using
